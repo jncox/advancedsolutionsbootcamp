@@ -1,8 +1,8 @@
 .. _calm_escript_blueprint:
 
-----------------------
-Calm: EScript Tutorial
-----------------------
+------------------------------------------------------
+Calm: EScript, Set Variable, and Task Library Tutorial
+------------------------------------------------------
 
 Overview
 ++++++++
@@ -16,6 +16,8 @@ You may have already noticed, but Nutanix Calm has a script type called EScript_
 .. note::
    It is sandboxed because the script runs **directly** within the Calm engine, which means it runs directly within Prism Central.  Allowing the user to import unknown and unvetted modules into Prism Central is a security concern.
    Compare this to shell or Powershell scripts, which are copied to the target machine with SFTP, and then run from the target machine.
+
+This lab will also cover two other items related to tasks, Set Variable, which allows for setting the results of a script to a Calm variable to be re-used later in the blueprint, and the Task Library, which allows for task re-use across blueprints.
 
 Blueprint and Credentials Creation
 ..................................
@@ -276,6 +278,23 @@ Lastly, run the **GetDefaultSubnet** action by clicking the play button next to 
 
 .. figure:: images/GetDefaultSubnet2.png
    
+Publishing to the Task Library
+..............................
+
+Imagine you have a task that you repeatedly use, like an upgrade task, or a common API call.  You may want to use this task across multiple blueprints, without having to copy and paste them, or keeping them in some third party tool.  The Task Library feature allows publishing of these commonly used tasks into a central repository.
+
+Navigate back to the **Blueprints** section, and select your same **eScript<Initials>** blueprint.  In the **Application Overview** pane, select the **RestList**, and in the **Blueprint Canvas**, select the **RuntimePost** task.
+
+In the **Configuration Pane** on the right, click the **Publish to Library** button.  In the pop-up that appears, change the following fields:
+
+- **Name** - Prism Central Runtime List <Initials>
+- Replace **address** with **Prism_Central_IP**
+
+Then click **Apply**.  You should note that the original **address** macro was replaced with **Prism_Central_IP**.  This feature allows you to make your macro names more generic to increase task portability.
+
+.. figure:: images/publish_task.png
+
+Click **Publish**.  Then on the left menu, select the **Task Library** icon.  Select and view the task that you just published.  Optionally share it with additional Projects, and then click **Save**.
 
 Takeaways
 +++++++++
@@ -283,4 +302,5 @@ Takeaways
 * In addition to being able to use Bash and Powershell scripts, Nutanix Calm can use EScript, which is a sandboxed Python interpreter, to provide application lifecycle management.
 * EScript tasks are run directly within the Calm engine, rather than being executed on the remote machine.
 * Shell, Powershell, and EScript tasks can all be utilized to set a variable based on script output.  That variable can then be used in other portions of the blueprint.
+* The Task Library allows for publishing of commonly used tasks into a central repository, giving the ability to share these scripts across Projects and Blueprints.
 
