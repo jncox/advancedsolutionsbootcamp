@@ -7,7 +7,7 @@ Calm: EScript Tutorial
 Overview
 ++++++++
 
-Thus far we've utilized Bash and Powershell scripts within Calm blueprints to automate complex application deployments.  While shell scripts are powerful and versitile, there are times a more robust programming language, like Python, are useful.  Python is both extremely powerful, and friendly for beginners due to it's easy readability.
+Thus far we've utilized Bash and Powershell scripts within Calm blueprints to automate complex application deployments.  While shell scripts are powerful and versitile, there are times a more robust programming language, like Python, are useful.  Python is both extremely powerful, and friendly for beginners due to its easy readability.
 
 You may have already noticed, but Nutanix Calm has a script type called EScript_.  Short for Epsilon Script (Epsilon is the orchestration engine that drives Calm), EScript is a sandboxed Python interpreter.  It contains many commonly used modules for scripting and automation.  In particular, it contains the **requests** module as **urlreq**, which allows Calm to interface with any Rest API.
 
@@ -24,14 +24,15 @@ From **Prism Central > Calm**, select **Blueprints** from the sidebar, and click
 
 .. figure:: images/create_blueprint.png
 
+
 In the pop-up, fill in the following three fields, and click **Proceed**:
 
 - **Name** - EScript<Initials>
 - **Description** - My First EScript Blueprint
 - **Project** - Calm
 
-
 .. figure:: images/name_blueprint.png
+
 
 Along the top of the blueprint, click on **Credentials**, and then click the blue **+** to create the following credential:
 
@@ -39,6 +40,8 @@ Along the top of the blueprint, click on **Credentials**, and then click the blu
 - **Username** - admin
 - **Secret Type** - Password
 - **Password** - Type in your Prism Central admin password
+
+.. figure:: images/credentials.png
 
 Click **Back** and then **Save**, and ensure no errors or warnings appear.
 
@@ -73,6 +76,7 @@ In the **Application Overview** pane on the left, click the **+** next to **Serv
 
 .. figure:: images/existing_machine.png
 
+
 There are several new and interesting items in the above configuration:
 
 - **Cloud** - Instead of creating a new VM on Nutanix or a public cloud provider, we're instead choosing to automate against an already existing machine.  All that's required for us to enter is an IP Address of the machine, which in our case is Prism Central.  Depending on your use case, you may specify something like Ansible Tower, or an Era Server, as an existing machine.
@@ -81,10 +85,10 @@ There are several new and interesting items in the above configuration:
 
 Click **Save**, and ensure no errors or warnings appear.
 
-Rest List Custom Action
-.......................
+RestList Custom Action
+......................
 
-In this section, we're going to be creating a custom action for our application.  When this action is later run, it will make a Rest API call against Prism Central.  Specifically, it will be a POST /list call, of a kind specified at runtime.  The results of this call will then be outputted.
+In this section, we're going to be creating a custom action for our application.  When this action is later run, it will make a Rest API call against Prism Central.  Specifically, it will be a POST /list call, of a *kind* specified at runtime.  The results of this call will then be outputted.
 
 In the **Application Overview** pane on the left, under the **Default Application Profile**, select the blue **+** next to **Actions**.
 
@@ -96,6 +100,7 @@ In the Action **Configuration Pane** that appears on the right, name the action 
 - **Runtime** - Selected
 
 .. figure:: images/restlist.png
+
 
 When this custom action is later, a pop-up will appear, prompting the user for input.  While **apps** will already be filled in for the user, the field can be easily changed.
 
@@ -132,10 +137,11 @@ Again, there are some new and interesting features of this task.  Note how there
 
 .. figure:: images/runtime_post.png
 
+
 Click **Save**, and ensure no errors or warnings appear.
 
-Get Project Default Subnet Custom Action
-........................................
+GetDefaultSubnet Custom Action
+..............................
 
 In this section, we're again going to be creating a custom action.  This time we'll make another Rest API call to get the list of **Projects** on this Prism Central instance.  We'll then parse the output of that API call to get the UUID of the default subnet that's set for the project that the running application belongs to.  This UUID will be set as a Calm variable, allowing for re-use elsewhere in the blueprint.  We'll then do another Rest API call, a GET on the default subnet (utilizing this newly set variable).
 
@@ -143,11 +149,13 @@ Select the **Prism Central** service within the **Blueprint Canvas**, and then i
 
 .. figure:: images/subnet_variable.png
 
+
 In the **Application Overview** pane on the left, under the **Default Application Profile**, select the blue **+** next to **Actions**.
 
 In the Action **Configuration Pane** that appears on the right, name the action **GetDefaultSubnet**.
 
 .. figure:: images/get_default_subnet.png
+
 
 In the **Blueprint Canvas**, click the **+ Task** button to add a task to our custom action.  Fill in the following fields:
 
@@ -195,13 +203,14 @@ In the **Blueprint Canvas**, click the **+ Task** button to add a task to our cu
      print "Post clusters/list request failed", resp.content
      exit(1)
 
-There are two main differences between this task and the previous.  The first is that instead of it being **Execute**, it is **Set Variable**.  Take note of the **print "SUBNET={0}"** line: Calm will parse output of the format **variable=value**, and set the variable equal to the value.  In our case, we're printing the variable called **SUBNET** is equal to the UUID of our chosen "default_subnet_reference" field in our API call response.  In the **Output** field below the Script body, we must paste in the variable name for Calm to set the variable appropriately.  Also, this variable must be defined somewhere else in the blueprint, in our case we defined it under the Service at the beginning of this section.
+There are two main differences between this task and the previous.  The first is that instead of the script type being **Execute**, it is **Set Variable**.  Take note of the **print "SUBNET={0}"** line: Calm will parse output of the format **variable=value**, and set the variable equal to the value.  In our case, we're printing the variable called **SUBNET** is equal to the UUID of our chosen "default_subnet_reference" field in our API call response.  In the **Output** field below the Script body, we must paste in the variable name for Calm to set the variable appropriately.  Also, this variable must be defined somewhere else in the blueprint, in our case we defined it under the Service at the beginning of this section.
 
 The second main difference is that we're no longer using our PC_Creds credentials.  Instead, we're using the **calm_jwt** macro to take care of Prism authentication.  If you're not familiar with JWT, read more about them here_.
 
 .. _here: https://en.wikipedia.org/wiki/JSON_Web_Token
 
 .. figure:: images/get_subnet_uuid.png
+
 
 Back in the **Blueprint Canvas**, click the **+ Task** button again to add a second task to our custom action.  Fill in the following fields:
 
@@ -228,10 +237,13 @@ Back in the **Blueprint Canvas**, click the **+ Task** button again to add a sec
        print json.dumps(json.loads(resp.content), indent=4)
        exit(0)
    else:
-       print "Post request failed", resp.content
+       print "Get request failed", resp.content
        exit(1)
 
 There's nothing too groundbreaking in this task.  As with the very first task in this exercise, we're doing an **Execute** of type **EScript**.  Similar to the previous task, we're using the JWT macro instead of using blueprint credentials.  Lastly, the API call is a GET instead of a POST, and we're utilizing the **SUBNET** variable we set in the previous task.
+
+.. figure:: images/get_subnet_info.png
+   
 
 Click **Save**, and ensure no errors or warnings appear.
 
@@ -243,22 +255,27 @@ Click the **Launch** button in the upper right corner of our blueprint.  Name th
 Navigate to the **Manage** page of the application, and view the **Create** task that is currently running.  It should complete quickly, as no VMs are getting created, and we do not have any tasks or scripts associated with our Create or Package Install.
 
 .. figure:: images/app_create.png
+   
 
 Next, run the **RestList** action by clicking the play button next to it.  You should see a pop-up appear with our **kind** variable, leave **apps** in the field, and then click **Run**.
 
 .. figure:: images/apps_run.png
+   
 
 In the output on the right pane, maximize the **RuntimePost** task, and view the API output.  Toggle between the output and the Script, by clicking the **View Script** link below the output.  Maximize the output/script window to make viewing easier.
 
 .. figure:: images/apps_run2.png
+   
 
 Next, run the **RestList** task again, this time changing the value of the runtime variable to something of your choice, like **images**, **clusters**, **hosts**, or **vms**.  View the output like before.
 
 Lastly, run the **GetDefaultSubnet** action by clicking the play button next to it, and clicking **Run** in the pop-up.  Expand both the **GetSubnetUUID** and **GetSubnetInfo** tasks, and view the output and the scripts, as before.
 
 .. figure:: images/GetDefaultSubnet.png
+   
 
 .. figure:: images/GetDefaultSubnet2.png
+   
 
 Takeaways
 +++++++++
