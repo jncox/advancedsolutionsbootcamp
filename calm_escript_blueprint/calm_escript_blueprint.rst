@@ -15,7 +15,7 @@ You may have already noticed, but Nutanix Calm has a script type called EScript_
 
 .. note::
    It is sandboxed because the script runs **directly** within the Calm engine, which means it runs directly within Prism Central.  Allowing the user to import unknown and unvetted modules into Prism Central is a security concern.
-   Compare this to shell or Powershell scripts, which are copied to the target machine with SFTP, and then run from the target machine.
+   Compare this to shell or Powershell scripts, which are copied to and then run directly from the target machine with SFTP.
 
 This lab will also cover two other items related to tasks, Set Variable, which allows for setting the results of a script to a Calm variable to be re-used later in the blueprint, and the Task Library, which allows for task re-use across blueprints.
 
