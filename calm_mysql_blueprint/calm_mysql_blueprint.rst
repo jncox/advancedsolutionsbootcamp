@@ -30,7 +30,7 @@ Click **Credentials >** :fa:`plus-circle` and fill out the following fields:
 
 - **Credential Name** - CENTOS
 - **Username** - centos
-- **Secret** - Key
+- **Secret** - SSH Private Key
 - **Key** - Paste in your private key generated from the previous lesson, or use::
 
    -----BEGIN RSA PRIVATE KEY-----
@@ -64,14 +64,12 @@ Click **Credentials >** :fa:`plus-circle` and fill out the following fields:
 
 .. figure:: images/510keycredential.png
 
-Click **Save**, and then **Back**.
+Click **Back**, and then **Save**.  Ensure no errors or warnings appear.
 
 .. note::
    Credentials are unique to each Blueprint.
    Each Blueprint requires a minimum of 1 Credential.
 
-
-Click **Save** to save your Blueprint.
 
 Setting Variables
 .................
